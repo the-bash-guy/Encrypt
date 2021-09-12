@@ -7,19 +7,31 @@ from os import stat, remove
 from cryptography.fernet import Fernet
 
 
-alert = "NOTE: FOR LARGE FILES IT WOULD TAKE SOME MINUTES."
-
-
 bufferSize = 128 * 1024
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+alert = f"{bcolors.WARNING}NOTE: FOR LARGE FILES IT WOULD TAKE SOME MINUTES."
 
 
 def launcher():
     print("\033c", end="")
-    sel = input("""Select:
+    sel = input(f"""{bcolors.OKCYAN}Select:
         [1] Encrypt
         [2] Decrypt
         [3] Exit
-        key: displays key for checking\n""")
+        key: displays key for checking\n{bcolors.ENDC}""")
     if sel == str(1):
         encrypt()
     elif sel == str(2):
@@ -29,7 +41,7 @@ def launcher():
     elif sel == "key":
         keyprint()
     else:
-        print("Type the number correctly.")
+        print(f"{bcolors.WARNING}Type the number correctly.{bcolors.ENDC}")
         sleep(1)
         launcher()
 
@@ -39,14 +51,14 @@ def pwd():
     try:
         password = open(fileopenbox(filetypes=["*.key"], default="*.key")).read()
     except TypeError:
-        print("Select a key!")
+        print(f"{bcolors.WARNING}Select a key!{bcolors.WARNING}")
         sleep(1)
         pwd()
 
 
 def keyprint():
     print(password)
-    print("Returning to menu. . .")
+    print(f"{bcolors.OKBLUE}Returning to menu. . .{bcolors.ENDC}")
     sleep(2)
     launcher()
 
@@ -61,7 +73,7 @@ def keygen():
         passwd = key
         password = passwd.decode("utf-8")
     except TypeError:
-        print("Save the key!")
+        print(f"{bcolors.WARNING}Save the key!{bcolors.ENDC}")
         sleep(1)
         keygen()
 

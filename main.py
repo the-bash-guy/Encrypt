@@ -8,6 +8,7 @@ from os import stat, remove
 from cryptography.fernet import Fernet
 
 
+
 alert = "NOTE: FOR LARGE FILES IT WOULD TAKE SOME MINUTES."
 
 
@@ -20,8 +21,21 @@ class MbConstants:
 bufferSize = 128 * 1024
 
 
+def color_head():
+    os.system("color B")
+
+
+def color_warn():
+    os.system("color E")
+
+
+def color_advise():
+    os.system("color 3")
+
+
 def launcher():
     os.system("cls")
+    color_head()
     sel = input("""Select:
         [1] Encrypt
         [2] Decrypt
@@ -36,9 +50,9 @@ def launcher():
     elif sel == "key":
         keyprint()
     else:
+        color_warn()
         print("Type the number correctly.")
         sleep(1)
-        os.system("cls")
         launcher()
 
 
@@ -47,12 +61,15 @@ def pwd():
     try:
         password = open(easygui.fileopenbox(filetypes=["*.key"], default="*.key")).read()
     except TypeError:
+        color_warn()
         print("Select a key!")
         sleep(1)
         pwd()
 
 
 def keyprint():
+    os.system("cls")
+    color_warn()
     print(password)
     print("Returning to menu. . .")
     sleep(2)
@@ -69,6 +86,7 @@ def keygen():
         passwd = key
         password = passwd.decode("utf-8")
     except TypeError:
+        color_warn()
         print("Save the key!")
         sleep(1)
         keygen()
@@ -78,6 +96,8 @@ def encrypt():
     try:
         file = easygui.fileopenbox()
         with open(file, "rb") as fIn:
+            color_warn()
+            os.system("cls")
             print(alert)
             with open(str(file) + ".enc", "wb") as fOut:
                 pyAesCrypt.encryptStream(fIn, fOut, password, bufferSize)
@@ -100,6 +120,8 @@ def decrypt():
         encfilesize = stat(file).st_size
         name = os.path.splitext(file)[0]
         with open(file, "rb") as fIn:
+            color_warn()
+            os.system("cls")
             print(alert)
             try:
                 with open(str(name), "wb") as fOut:
