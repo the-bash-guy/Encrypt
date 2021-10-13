@@ -1,3 +1,4 @@
+import subprocess
 import pyAesCrypt
 import tkinter as tk
 import easygui
@@ -61,11 +62,13 @@ def encrypt():
             name = os.path.splitext(file)[0]
             with open(file, "rb") as fIn:
                 with open(str(name) + ".tmp", "wb") as fOut:
+                    proc1 = subprocess.Popen(["progress\\progress.exe"])
                     pyAesCrypt.encryptStream(fIn, fOut, password, bufferSize)
             remove(file)
             os.rename(name + ".tmp", file)
+            proc1.terminate()
             if expvar.get() == 1:
-                os.system("explorer /select," + str(file))
+                os.system("explorer /select," + file)
             else:
                 tkinter.messagebox.showinfo("Encryption", "Done! File saved to " + file)
 
@@ -78,18 +81,20 @@ def decrypt():
         warn_nokey()
     else:
         try:
-            file = easygui.fileopenbox(filetypes=["*.*"], default="*.*")
+            file = easygui.fileopenbox()
             encfilesize = stat(file).st_size
             name = os.path.splitext(file)[0]
             with open(file, "rb") as fIn:
                 try:
                     with open(str(name) + ".tmp", "wb") as fOut:
+                        proc1 = subprocess.Popen(["progress\\progress.exe"])
                         pyAesCrypt.decryptStream(fIn, fOut, password, bufferSize, encfilesize)
                 except ValueError:
                     remove(file)
 
             remove(file)
             os.rename(name + ".tmp", file)
+            proc1.terminate()
             if expvar.get() == 1:
                 os.system("explorer /select," + file)
             else:
@@ -106,7 +111,7 @@ def keyprint():
         warn_nokey()
 
 
-window.title("Encrypt V4.1")
+window.title("Encrypt V4.2")
 window.geometry("854x480")
 newkey = tk.Button(text="Load a key", command=pwd)
 newkey.pack()
@@ -122,7 +127,6 @@ alert = tk.Text(window)
 alert.insert(tk.INSERT, """NOTE: For large files it can take some minutes. When done, you will be warned.
 WARNING: DO NOT INTERACT WITH THE WINDOW DURING ENCRYPTION/DECRYPTION PROCESS, AS THE WINDOW WILL NOT RESPOND.""")
 alert.pack()
-if password == "" or " ":
+if password == "" or None:
     warn_nokey()
-
 window.mainloop()

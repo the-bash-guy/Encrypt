@@ -7,6 +7,8 @@ from cryptography.fernet import Fernet
 import tkinter.messagebox
 from tkinter import *
 import sys
+import subprocess
+
 
 password = ""
 
@@ -58,14 +60,17 @@ def encrypt():
     else:
         try:
             file = easygui.fileopenbox()
+            dirlinux = os.path.dirname(file)
             name = os.path.splitext(file)[0]
             with open(file, "rb") as fIn:
                 with open(str(name) + ".tmp", "wb") as fOut:
+                    prog1 = subprocess.Popen(["progress"])
                     pyAesCrypt.encryptStream(fIn, fOut, password, bufferSize)
             remove(file)
             os.rename(name + ".tmp", file)
+            prog1.terminate()
             if expvar.get() == 1:
-                os.system("xdg-open " + dir)
+                os.system("xdg-open " + dirlinux)
             else:
                 tkinter.messagebox.showinfo("Encryption", "Done! File saved to " + file)
 
@@ -78,20 +83,23 @@ def decrypt():
         warn_nokey()
     else:
         try:
-            file = easygui.fileopenbox(filetypes=["*.*"], default="*.*")
+            file = easygui.fileopenbox()
+            dirlinux = os.path.dirname(file)
             encfilesize = stat(file).st_size
             name = os.path.splitext(file)[0]
             with open(file, "rb") as fIn:
                 try:
                     with open(str(name) + ".tmp", "wb") as fOut:
+                        prog1 = subprocess.Popen(["progress"])
                         pyAesCrypt.decryptStream(fIn, fOut, password, bufferSize, encfilesize)
                 except ValueError:
                     remove(file)
 
             remove(file)
             os.rename(name + ".tmp", file)
+            prog1.terminate()
             if expvar.get() == 1:
-                os.system("xdg-open " + dir)
+                os.system("xdg-open " + dirlinux)
             else:
                 tkinter.messagebox.showinfo("Encryption", "Done! File saved to " + file)
 
@@ -106,7 +114,7 @@ def keyprint():
         warn_nokey()
 
 
-window.title("Encrypt V4.1")
+window.title("Encrypt V4.2")
 window.geometry("854x480")
 newkey = tk.Button(text="Load a key", command=pwd)
 newkey.pack()
@@ -122,7 +130,6 @@ alert = tk.Text(window)
 alert.insert(tk.INSERT, """NOTE: For large files it can take some minutes. When done, you will be warned.
 WARNING: DO NOT INTERACT WITH THE WINDOW DURING ENCRYPTION/DECRYPTION PROCESS, AS THE WINDOW WILL NOT RESPOND.""")
 alert.pack()
-if password == "" or " ":
+if password == "" or None:
     warn_nokey()
-
 window.mainloop()
