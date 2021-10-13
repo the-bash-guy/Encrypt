@@ -5,7 +5,7 @@ Python made encryptor that uses pyAesCrypt for AES encryption.
 # Download and install
 
 You can download it from "Releases" page. It's available for Windows and Linux.
-Follow the instructions for Windows. On Linux you can directly run the program.
+Follow the instructions for Windows. On Linux you need to run the "install.sh" file, after that you can run the program by typing "encrypt" on the command line. (Executables are copied to /usr/local/bin).
 
 # How to use
 
