@@ -1,7 +1,6 @@
 # IMPORTANT
 
-It seems the repo isn't inactive, but i'm working for a future release.
-
+Encrypt V5.0 is coming! Stay tuned.
 
 # Encrypt
 
