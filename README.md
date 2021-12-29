@@ -1,45 +1,25 @@
-# IMPORTANT
-
-Encrypt V5.0 is coming! Stay tuned.
-
 # Encrypt
 
 Python made encryptor that uses pyAesCrypt for AES encryption.
 
 # Download and install
 
-You can download it from "Releases" page. It's available for Windows and Linux.
-Follow the instructions for Windows. On Linux you need to run the "install.sh" file, after that you can run the program by typing "encrypt" on the command line. (Executables are copied to /usr/local/bin).
+Encrypt (at least for now) is no longer available for Linux.
+Windows: You can get latest versions from Releases page or https://noescape1151.ddns.net (available soon)
 
 # How to use
 
-When opening, it will prompt you to generate or load a key. If you don't have any key, generate a new one.
+You need to load or generate a key.
 
-<img width="665" alt="Immagine 2021-10-05 122124" src="https://user-images.githubusercontent.com/68642808/136005891-e6c827dd-30d7-47d1-906a-53de6923a21c.png">
-
-<img width="451" alt="Immagine 2021-10-05 122144" src="https://user-images.githubusercontent.com/68642808/136005921-3a061b82-a4ec-4f63-b2c3-77e5eddd1181.png">
-
-# Viewing the key in use
-
-You can view the key that are you using the button "Print the key"
-
-<img width="656" alt="Immagine 2021-10-05 122242" src="https://user-images.githubusercontent.com/68642808/136006079-46cfd9fa-69c0-4bb3-af5f-cf5627ea4584.png">
-
-# Warnings
-
-If you try to encrypt, decrypt or print the key without a key loaded, it will prompt to you that isn't any key loaded. (NOTE: There are still a few bugs that will be fixed in a major release).
-
-<img width="524" alt="Immagine 2021-10-05 122321" src="https://user-images.githubusercontent.com/68642808/136006376-9eef0425-041f-40f2-8887-f57819ce38e4.png">
-
-# Options
-
-You can choose if opening the file in explorer at the end of the process.
-
-<img width="159" alt="Immagine 2021-10-05 122953" src="https://user-images.githubusercontent.com/68642808/136006733-36337bc3-4bdb-4a12-a6cd-e1efb5a611bb.png">
+![Encrypt_Menu](https://user-images.githubusercontent.com/68642808/147616230-cb6429ea-6546-42d7-aef1-dfc7802116cd.png)
+![Encrypt_Key](https://user-images.githubusercontent.com/68642808/147616279-d9657bc8-21e0-4678-803a-594ac07c4a8e.png)
 
 # Encrypt/Decrypt
 After pressing the Encrypt/Decrypt button, you can choose any file.
+Now you can select multiple files.
+![Encrypt_File_Select](https://user-images.githubusercontent.com/68642808/147616315-7a81f868-1dbc-4101-ad99-6460ceed2600.png)
 
+# Progress Bar
+The progress bar is made in C#.
 
-<img width="519" alt="Immagine 2021-10-05 123020" src="https://user-images.githubusercontent.com/68642808/136006818-432944a4-a7b6-4c63-a3ed-5e204968d654.png">
-When done, you will be prompted. If "Show files in explorer when done" is enabled, explorer will be opened without any prompt.
+![Encrypt_Progress](https://user-images.githubusercontent.com/68642808/147616324-6bfafa02-965c-4d37-8df1-128db9a880c5.png)
