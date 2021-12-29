@@ -1,0 +1,11 @@
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\bin\x64\Debug\ProgressBar.exe.config
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\bin\x64\Debug\ProgressBar.exe
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\bin\x64\Debug\ProgressBar.pdb
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.csproj.AssemblyReference.cache
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.csproj.SuggestedBindingRedirects.cache
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.Form1.resources
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.Properties.Resources.resources
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.csproj.GenerateResource.cache
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.csproj.CoreCompileInputs.cache
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.exe
+C:\Users\vivan\source\repos\ProgressBar\ProgressBar\obj\x64\Debug\ProgressBar.pdb
