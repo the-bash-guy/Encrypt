@@ -1,132 +1,141 @@
 import subprocess
-import pyAesCrypt
-import tkinter as tk
+import sys
+import kivy
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.boxlayout import BoxLayout
+from kivy.config import Config
 import easygui
+import pyAesCrypt
 import os
 from os import stat, remove
 from cryptography.fernet import Fernet
-import tkinter.messagebox
-from tkinter import *
-import sys
+from pathlib import Path
+import textwrap
+kivy.require('2.0.0')
+os.chdir(sys._MEIPASS)
+
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 password = ""
-
-window = tk.Tk()
-expvar = tkinter.IntVar()
-exp = Checkbutton(text="Show file in explorer when done", variable=expvar)
-exp.pack()
 
 bufferSize = 128 * 1024
 
 
-def warn_nokey():
-    easygui.msgbox("No key loaded. please load one.", ok_button="Load/Generate key")
-    initkey = easygui.choicebox("Do you want to generate a new key or load an existing key?",
-                                choices=['Load', 'Generate', 'Exit'])
-    if initkey == "Load":
-        pwd()
-    elif initkey == "Generate":
-        keygen()
-    else:
-        sys.exit(0)
+class Encrypt(BoxLayout):
+    def __init__(self, **kwargs):
+        super(Encrypt, self).__init__(**kwargs)
 
-
-def pwd():
-    global password
-    try:
-        password = open(easygui.fileopenbox(filetypes=["*.key"], default="*.key")).read()
-    except TypeError:
-        pass
-
-
-def keygen():
-    global password
-    try:
-        key = Fernet.generate_key()
-        password = easygui.filesavebox(filetypes=["key.key"], default="key.key")
-        with open(password, 'wb') as filekey:
-            filekey.write(key)
-        passwd = key
-        password = passwd.decode("utf-8")
-        password.replace(" ", password)
-    except TypeError:
-        pass
-
-
-def encrypt():
-    if password == "" or None:
-        warn_nokey()
-    else:
+    @staticmethod
+    def pwd():
+        global password
         try:
-            file = easygui.fileopenbox()
-            name = os.path.splitext(file)[0]
-            with open(file, "rb") as fIn:
-                with open(str(name) + ".tmp", "wb") as fOut:
-                    proc1 = subprocess.Popen(["progress\\progress.exe"])
-                    pyAesCrypt.encryptStream(fIn, fOut, password, bufferSize)
-            remove(file)
-            os.rename(name + ".tmp", file)
-            proc1.terminate()
-            if expvar.get() == 1:
-                os.system("explorer /select," + file)
-            else:
-                tkinter.messagebox.showinfo("Encryption", "Done! File saved to " + file)
-
+            home = os.path.expanduser('~')
+            password = open(easygui.fileopenbox(filetypes=["*.key"], default=home + "\\*.key")).read()
         except TypeError:
             pass
 
+    @staticmethod
+    def unload():
+        global password
+        password = ""
 
-def decrypt():
-    if password == "" or None:
-        warn_nokey()
-    else:
+    @staticmethod
+    def warn_nokey():
+        popup = Popup(title='Error', content=Label(text='First, load a key'), size_hint=(None, None),
+                      size=(300, 300))
+        popup.open()
+
+    @staticmethod
+    def keygen():
+        global password
         try:
-            file = easygui.fileopenbox()
-            encfilesize = stat(file).st_size
-            name = os.path.splitext(file)[0]
-            with open(file, "rb") as fIn:
-                try:
-                    with open(str(name) + ".tmp", "wb") as fOut:
-                        proc1 = subprocess.Popen(["progress\\progress.exe"])
-                        pyAesCrypt.decryptStream(fIn, fOut, password, bufferSize, encfilesize)
-                except ValueError:
-                    remove(file)
-
-            remove(file)
-            os.rename(name + ".tmp", file)
-            proc1.terminate()
-            if expvar.get() == 1:
-                os.system("explorer /select," + file)
-            else:
-                tkinter.messagebox.showinfo("Encryption", "Done! File saved to " + file)
-
+            key = Fernet.generate_key()
+            home = os.path.expanduser('~')
+            password = easygui.filesavebox(filetypes=["key.key"], default=home + "\\key.key")
+            with open(password, 'wb') as filekey:
+                filekey.write(key)
+            passwd = key
+            decoded = passwd.decode("utf-8")
+            password = decoded
         except TypeError:
-            pass
+            Encrypt.unload()
+
+    def encrypt(self):
+        global file
+        if password == "" or None:
+            self.warn_nokey()
+        else:
+            try:
+                home = os.path.expanduser('~')
+                file = easygui.fileopenbox(default=home + "\\*.*", multiple=True, title="Select files to encrypt")
+                for i in file:
+                    name = os.path.splitext(i)[0]
+                    with open(i, "rb") as fIn:
+                        try:
+                            with open(name + ".tmp", "wb") as fOut:
+                                subprocess.Popen([".\\Progress", i, name + ".tmp"])
+                                pyAesCrypt.encryptStream(fIn, fOut, password, bufferSize)
+                        except ValueError:
+                            remove(name + ".tmp")
+                for i in file:
+                    try:
+                        name = os.path.splitext(i)[0]
+                        if os.path.isfile(name + ".tmp"):
+                            remove(i)
+                        os.rename(name + ".tmp", i)
+                    except FileNotFoundError:
+                        pass
+                message = 'Done: File(s) saved to:' + str(Path(file[0]).parent)
+                popup = Popup(title='Success!', content=Label(text=textwrap.fill(message, 20)),
+                              size_hint=(None, None),
+                              size=(300, 300))
+                popup.open()
+            except TypeError:
+                pass
+
+    def decrypt(self):
+        global file
+        if password == "" or None:
+            self.warn_nokey()
+        else:
+            try:
+                home = os.path.expanduser('~')
+                file = easygui.fileopenbox(default=home + "\\*.*", multiple=True, title="Select files to decrypt")
+                for i in file:
+                    name = os.path.splitext(i)[0]
+                    encfilesize = stat(i).st_size
+                    with open(i, "rb") as fIn:
+                        try:
+                            with open(name + ".tmp", "wb") as fOut:
+                                subprocess.Popen([".\\Progress", i, name + ".tmp"])
+                                pyAesCrypt.decryptStream(fIn, fOut, password, bufferSize, encfilesize)
+                        except ValueError:
+                            remove(name + ".tmp")
+                for i in file:
+                    try:
+                        name = os.path.splitext(i)[0]
+                        if os.path.isfile(name + ".tmp"):
+                            remove(i)
+                        os.rename(name + ".tmp", i)
+                    except FileNotFoundError:
+                        pass
+                message = 'Done: File(s) saved to:' + str(Path(file[0]).parent)
+                popup = Popup(title='Success!', content=Label(text=textwrap.fill(message, 20)),
+                              size_hint=(None, None),
+                              size=(300, 300))
+                popup.open()
+            except TypeError:
+                pass
 
 
-def keyprint():
-    try:
-        tkinter.messagebox.showinfo("Key", "Key: " + password)
-    except TypeError:
-        warn_nokey()
+class MainApp(App):
+    title = "Encrypt V5.0"
+
+    def build(self):
+        return Encrypt()
 
 
-window.title("Encrypt V4.2")
-window.geometry("854x480")
-newkey = tk.Button(text="Load a key", command=pwd)
-newkey.pack()
-keygener = tk.Button(text="Generate a new key", command=keygen)
-keygener.pack()
-enc = tk.Button(text="Encrypt", command=encrypt)
-enc.pack()
-decr = tk.Button(text="Decrypt", command=decrypt)
-decr.pack()
-printkey = tk.Button(text="Print the key", command=keyprint)
-printkey.pack()
-alert = tk.Text(window)
-alert.insert(tk.INSERT, """NOTE: For large files it can take some minutes. When done, you will be warned.
-WARNING: DO NOT INTERACT WITH THE WINDOW DURING ENCRYPTION/DECRYPTION PROCESS, AS THE WINDOW WILL NOT RESPOND.""")
-alert.pack()
-if password == "" or None:
-    warn_nokey()
-window.mainloop()
+app = MainApp()
+app.run()
