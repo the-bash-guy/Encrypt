@@ -5,7 +5,7 @@ Python made encryptor that uses pyAesCrypt for AES encryption.
 # Download and install
 
 Encrypt (at least for now) is no longer available for Linux.
-Windows: You can get latest versions from Releases page or https://noescape1151.ddns.net (available soon)
+Windows: You can get latest versions from Releases page.
 
 # How to use
 
